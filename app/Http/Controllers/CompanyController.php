@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Employee;
+use App\Models\Contact;
+use App\Models\Addresse;
 
 class CompanyController extends Controller
 {
@@ -13,8 +16,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
-        echo "llllllllllllll";
+           
     }
 
     /**
@@ -24,7 +26,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        echo "lllllll  kdkdk  lplllp.s   ";
+
     }
 
     /**
@@ -35,7 +37,30 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $employee = new Employee();
+        $employee->firstname = $request->firstname;
+        $employee->lastname = $request->lastname;
+        $employee->gender = $request->gender;
+        $employee->dept_id = $request->dept_id;
+        $employee->save();   
+        foreach ($request->mobile as $key => $number) {
+            $mobile = new Contact();
+            $mobile->number = $number;
+            $mobile->emp_id = $employee->id;
+            $mobile->save();  
+        }  
+        foreach ($request->address as $key => $address_data) {
+            $address = new Addresse();
+            $address->address = $address_data;
+            $address->emp_id = $employee->id;
+            $address->save();  
+        }  
+         if($employee->id != ''){
+            return array("status"=>"success","dep_id"=>$employee->id);
+        }else{
+            return array("status"=>"false");  
+        }
+        return $request->mobile;
     }
 
     /**
@@ -57,7 +82,7 @@ class CompanyController extends Controller
      */
     public function edit($id)
     {
-        echo "kgkgkgk";
+        
     }
 
     /**
