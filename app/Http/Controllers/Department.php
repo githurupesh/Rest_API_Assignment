@@ -77,7 +77,11 @@ class Department extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        $update_dept = Depart::find($id);
+        $update_dept->name = $request->department;
+        $updated = $update_dept->save();
+        return $updated ? 'updated' : 'error';
     }
 
     /**
