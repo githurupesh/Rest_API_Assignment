@@ -18,9 +18,9 @@ class CompanyController extends Controller
     public function index()
     {
           $data = DB::select("SELECT e.*,GROUP_CONCAT(DISTINCT (CONCAT(c.id,' ; ',c.number))) AS mobile_num ,GROUP_CONCAT(DISTINCT (CONCAT(a.id,' ; ',a.address))) AS emp_address FROM `employees` AS e  LEFT JOIN 
-contacts AS c ON e.id = c.emp_id 
-LEFT JOIN `addresses` AS a ON c.emp_id = a.emp_id 
-GROUP BY id ,c.emp_id,a.emp_id");
+                contacts AS c ON e.id = c.emp_id 
+                LEFT JOIN `addresses` AS a ON c.emp_id = a.emp_id 
+            GROUP BY id ,c.emp_id,a.emp_id");
           return $data;
 
     }
@@ -100,7 +100,7 @@ GROUP BY id ,c.emp_id,a.emp_id");
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
@@ -111,6 +111,9 @@ GROUP BY id ,c.emp_id,a.emp_id");
      */
     public function destroy($id)
     {
-        //
+        $deleted = Employee::destroy($id);
+        Contact::where('emp_id',$id)->delete();
+        Addresse::where('emp_id',$id)->delete();
+        return $deleted ? 'deleted' : 'error';
     }
 }
