@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Contact;
 use App\Models\Addresse;
 use Illuminate\Support\Facades\DB;
+use App\Models\Depart;
 
 class CompanyController extends Controller
 {
@@ -43,6 +44,11 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
+        $department = Depart::find($request->dept_id);
+        
+        if($department == ''){
+            return 'Department does not exist';    
+        }
         $employee = new Employee();
         $employee->firstname = $request->firstname;
         $employee->lastname = $request->lastname;
@@ -66,7 +72,6 @@ class CompanyController extends Controller
         }else{
             return array("status"=>"false");  
         }
-        return $request->mobile;
     }
 
     /**
@@ -100,7 +105,29 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $employee = Employee::find($id);
+        $employee->firstname = $request->firstname;
+        $employee->lastname = $request->lastname;
+        $employee->gender = $request->gender;
+        $employee->dept_id = $request->dept_id;
+        $employee->save();   
+        foreach ($request->mobile as $key => $number) {
+            
+            if(isset($number['id'])){
+                $mobile_update = Contact::find($number['id']);
+                $mobile_update->number = $number;
+                $mobile_update->save();  
+            }
+        }  
+        foreach ($request->address as $key => $address_data) {
+            
+            if(isset($address_data['id'])){
+                $address_update = Addresse::find($address_data['id']);
+                $address_update->address = $address_data['value'];
+                $address_update->save();  
+            }   
+        }  
+         return 'updated';
     }
 
     /**
